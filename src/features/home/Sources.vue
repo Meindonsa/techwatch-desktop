@@ -1,24 +1,15 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { SourceService } from '@/shared/api/SourceService.ts'
-import type { SourceView } from '@meindonsa/techwatch-api/models'
+import { computed, onMounted, ref } from 'vue'
 import SourceForm from '@/features/home/SourceForm.vue'
 import { isUrl } from '@/shared/service/Utils.ts'
+import { useSourcesStore } from '@/core/stores/SourceStore.ts'
 
 const loading = ref(false)
 const errorMessage = ref<null | string>(null)
 const showSource = ref(false)
-const sources = ref<SourceView[]>([])
-const retrieveSources = async () => {
-  loading.value = true
-  const body = {
-    size: 10,
-    index: 0,
-  }
-  const { data } = await SourceService.retrieveSources(body)
-  if (data) sources.value = data.objects
-  loading.value = false
-}
+const sourcesStore = useSourcesStore()
+
+const sources = computed(() => sourcesStore.sources);
 
 const hideForm = () => {
   showSource.value = !showSource.value
@@ -26,34 +17,19 @@ const hideForm = () => {
 
 const onSubmit = (event: any) => {
   const req = event
-  if (!isUrl(req?.url)) {
-    errorMessage.value = 'Url invalid !'
-    setTimeout(() => {
-      errorMessage.value = null
-    }, 2000)
-    return
-  }
   loading.value = true
-
-  SourceService.createSource(req)
-    .then((data) => {
-      hideForm();
-      retrieveSources()
+  sourcesStore
+    .addSource(req)
+    .then(() => {
+      hideForm()
     })
     .catch((error) => {
-      errorMessage.value = error?.response?.data?.message
-      setTimeout(() => {
-        errorMessage.value = null;
-      }, 2000)
+      console.error(error)
     })
-    .finally(() => {
-      loading.value = false;
-    })
+    .finally(() => { loading.value = false })
 }
 
-onMounted(() => {
-  retrieveSources()
-})
+onMounted(() => sourcesStore.fetchSources())
 </script>
 
 <template>
@@ -83,7 +59,7 @@ onMounted(() => {
       >
         <li
           v-for="source of sources"
-          :key="source?.fid"
+          :key="source?.id"
           class="text-sm text-body truncate mb-2 hover:text-indigo-500 transition ease-in-out duration-300"
         >
           <a

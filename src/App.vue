@@ -2,14 +2,13 @@
 import { RouterView } from 'vue-router'
 import Navbar from '@/shared/components/Navbar.vue'
 import Footer from '@/shared/components/Footer.vue'
+
 </script>
 
 <template>
-  <Navbar/>
+  <Navbar />
   <RouterView />
-  <Footer/>
+  <Footer />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

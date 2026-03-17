@@ -9,7 +9,7 @@ export function hasInvalidString(...value: string[]) {
 }
 
 export function isUrl(value: string) {
-  if (value.length == 0) return false
+  if (!value || value.length == 0) return false
   try {
     const url = includesProtocol(value) ? value : `http://${value}`
     new URL(url)

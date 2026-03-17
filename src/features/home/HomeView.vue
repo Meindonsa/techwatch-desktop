@@ -20,20 +20,20 @@ const pagination = ref({
   size: 5,
 })
 const retrieveArticles = async (pageIndex = 0, searchKey: null | string = null) => {
-  loading.value = true
-  try {
-    const body = { size: 5, index: pageIndex, searchKey: searchKey }
-    const { data } = await ArticleService.retrieveArticles(body)
-    if (data) {
-      articles.value = data.objects
-      pagination.value.total = data.total
-      pagination.value.page = pageIndex
-    }
-  } catch (e) {
-    console.error('Erreur lors de la récupération :', e)
-  } finally {
-    loading.value = false
-  }
+  //loading.value = true
+  // try {
+  //   const body = { size: 5, index: pageIndex, searchKey: searchKey }
+  //   const { data } = await ArticleService.retrieveArticles(body)
+  //   if (data) {
+  //     articles.value = data.objects
+  //     pagination.value.total = data.total
+  //     pagination.value.page = pageIndex
+  //   }
+  // } catch (e) {
+  //   console.error('Erreur lors de la récupération :', e)
+  // } finally {
+  //   loading.value = false
+  // }
 }
 
 watchEffect(() => {

@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { hasInvalidString } from '@/shared/service/Utils.ts'
+import { hasInvalidString, isUrl } from '@/shared/service/Utils.ts'
 import Button from '@/shared/components/Button.vue'
 
-const emit = defineEmits(['onCancel', "onSave"])
+const emit = defineEmits(['onCancel', 'onSave'])
 const form = ref({
   name: '',
   url: '',
 })
 
 const isValid = computed(() => {
-  return  hasInvalidString(form.value.name, form.value.url)
+  return hasInvalidString(form.value.name, form.value.url) || !isUrl(form.value.url);
 })
 
 const onCancel = () => {
@@ -18,7 +18,7 @@ const onCancel = () => {
 }
 
 const onclick = () => {
-  emit("onSave", form.value)
+  emit('onSave', form.value)
 }
 </script>
 
