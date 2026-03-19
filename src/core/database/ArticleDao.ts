@@ -2,15 +2,20 @@ import type { GetArticlesOptions } from '@/core/database/DbType.ts'
 import { type Article, db } from '@/core/database/db.ts'
 
 export const ArticleDao = {
-  getAll({ sourceId, limit, offset }: GetArticlesOptions = {}): Promise<Article[]> {
+  async getAll({ sourceId, limit, offset }: GetArticlesOptions = {}): Promise<{
+    articles: Article[]
+    total: number
+  }> {
     let query = sourceId
       ? db.articles.where('source_id').equals(sourceId).reverse()
       : db.articles.orderBy('published_at').reverse()
+    const total = await query.count()
 
-    if (offset) query = query.offset(offset)
     if (limit) query = query.limit(limit)
+    if (offset) query = query.offset(offset)
 
-    return query.toArray()
+    const articles = await query.toArray()
+    return { articles, total }
   },
 
   getByUrl(url: string): Promise<Article | undefined> {

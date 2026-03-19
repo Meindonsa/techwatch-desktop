@@ -8,17 +8,15 @@ import type { ArticlesView } from '@meindonsa/techwatch-api/models'
 import Button from '@/shared/components/Button.vue'
 import { useRouter } from 'vue-router'
 import Skeleton from '@/shared/components/Skeleton.vue'
+import { fakeArticles } from '@/core/database/FakeData.ts'
+import { useArticleStore } from '@/core/stores/ArticleStore.ts'
 
 const router = useRouter()
 const loading = ref(false)
 const useFilter = useFilterStore()
 const searchValue = computed(() => useFilter.searchValue)
 const articles = ref<ArticlesView[]>([])
-const pagination = ref({
-  total: 0,
-  page: 0,
-  size: 5,
-})
+
 const retrieveArticles = async (pageIndex = 0, searchKey: null | string = null) => {
   //loading.value = true
   // try {
@@ -43,6 +41,7 @@ watchEffect(() => {
 const seeAll = () => {
   router.push('/articles')
 }
+
 </script>
 
 <template>

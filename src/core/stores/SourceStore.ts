@@ -1,6 +1,6 @@
 import { ref, readonly } from 'vue'
 import { defineStore } from 'pinia'
-import type { SourceStatus, SourceType } from '@/core/database/DbType.ts'
+import type { SourceStatus } from '@/core/database/DbType.ts'
 import type { Source } from '@/core/database/db.ts'
 import { SourcesDao } from '@/core/database/SourceDao.ts'
 
