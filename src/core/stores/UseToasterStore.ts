@@ -45,5 +45,9 @@ export default defineStore('toaster-store', {
     error(payload: ToastPayload) {
       this.updateState(payload, 'error')
     },
+
+    info(payload: ToastPayload) {
+      this.updateState(payload, 'info')
+    },
   },
 })

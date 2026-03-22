@@ -58,10 +58,10 @@ class FeedReaderDatabase extends Dexie {
     super('Techwatch')
 
     this.version(1).stores({
-      sources:    '++id, name, url, type, status, created_at, last_fetched_at',
-      articles:   '++id, &url, source_id, published_at, saved_at',
+      sources: '++id, name, url, type, &feed_url, status, created_at, last_fetched_at',
+      articles: '++id, &url, source_id, published_at, saved_at',
       fetch_logs: '++id, source_id, status, fetched_at',
-      settings:   'key',
+      settings: 'key',
     })
 
     this.on('populate', async () => {

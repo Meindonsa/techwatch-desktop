@@ -4,12 +4,14 @@ import SourceForm from '@/features/home/SourceForm.vue'
 import { isUrl } from '@/shared/service/Utils.ts'
 import { useSourcesStore } from '@/core/stores/SourceStore.ts'
 import useToasterStore from '@/core/stores/UseToasterStore.ts'
+import { useScrappingStore } from '@/core/stores/ScrappingStore.ts'
 
 const loading = ref(false)
 const errorMessage = ref<null | string>(null)
 const showSource = ref(false)
 const sourcesStore = useSourcesStore()
 const toasterStore = useToasterStore()
+const scrappingSource = useScrappingStore()
 
 const sources = computed(() => sourcesStore.sources)
 
@@ -29,6 +31,7 @@ const onSubmit = (event: any) => {
     .then(() => {
       hideForm()
       toasterStore.success({ text: `${req.name} enrgistré avec succès !` })
+      scrappingSource.scrap(req.feed_url);
     })
     .catch((error) => {
       console.error(error)
@@ -43,7 +46,7 @@ const onDelete = (event: any) => {
   sourcesStore
     .removeSource(event.id)
     .then(() => {
-      toasterStore.success({ text: `${event.name} Supprimé avec succès !` })
+      toasterStore.success({ text: `${event.name} supprimé avec succès !` })
     })
     .catch((error) => {
       console.error(error)

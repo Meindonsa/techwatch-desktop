@@ -78,6 +78,9 @@ const toastClassMap: Record<TToastStatus, string> = {
   &.error {
     --color: red;
   }
+  &.info {
+    --color: #1a68f3;
+  }
   &-icon {
     width: 1.8rem;
     aspect-ratio: 1/1;

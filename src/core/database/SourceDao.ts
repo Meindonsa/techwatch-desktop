@@ -1,4 +1,5 @@
 import { db, type Source } from '@/core/database/db.ts'
+import { hasInvalidString } from '@/shared/service/Utils.ts'
 
 export const SourcesDao = {
   getAll(): Promise<Source[]> {
@@ -7,6 +8,10 @@ export const SourcesDao = {
 
   getById(id: number): Promise<Source | undefined> {
     return db.sources.get(id)
+  },
+
+  getByFeedUrl(value: any): Promise<Source | undefined> {
+    return db.sources.get({ feed_url: value });
   },
 
   add(source: Omit<Source, 'id' | 'created_at' | 'last_fetched_at'>): Promise<number> {
