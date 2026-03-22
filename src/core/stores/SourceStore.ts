@@ -69,6 +69,7 @@ export const useSourcesStore = defineStore('sources', () => {
     try {
       await SourcesDao.remove(id)
       sources.value = sources.value.filter((s) => s.id !== id)
+      await fetchSources()
       return true
     } catch (e) {
       error.value = (e as Error).message

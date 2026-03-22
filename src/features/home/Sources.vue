@@ -18,17 +18,32 @@ const hideForm = () => {
 }
 
 const onSubmit = (event: any) => {
+  loading.value = true
   const req = {
     name: event.name,
     url: event.originalUrl,
     feed_url: event.feedUrl,
   }
-  loading.value = true
   sourcesStore
     .addSource(req)
     .then(() => {
       hideForm()
       toasterStore.success({ text: `${req.name} enrgistré avec succès !` })
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+const onDelete = (event: any) => {
+  loading.value = true
+  sourcesStore
+    .removeSource(event.id)
+    .then(() => {
+      toasterStore.success({ text: `${event.name} Supprimé avec succès !` })
     })
     .catch((error) => {
       console.error(error)
@@ -69,7 +84,7 @@ onMounted(() => sourcesStore.fetchSources())
         <li
           v-for="source of sources"
           :key="source?.id"
-          class="text-sm text-body truncate mb-2 hover:text-indigo-500 transition ease-in-out duration-300"
+          class="source text-sm flex justify-between items-center text-body truncate mb-2 hover:text-indigo-500 transition ease-in-out duration-300"
         >
           <a
             :href="source?.url"
@@ -78,6 +93,7 @@ onMounted(() => sourcesStore.fetchSources())
           >
             {{ source?.name }}
           </a>
+          <i class="bx bx-trash cursor-pointer" @click="onDelete(source)"></i>
         </li>
       </TransitionGroup>
     </div>
@@ -93,5 +109,15 @@ onMounted(() => sourcesStore.fetchSources())
 .list-leave-to {
   opacity: 0;
   transform: translateX(30px);
+}
+.source {
+  i {
+    display: none;
+  }
+  &:hover {
+    i {
+      display: inline-block;
+    }
+  }
 }
 </style>
