@@ -2,22 +2,16 @@
 import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import { datePipe } from '@/shared/service/DateFormatter.ts'
-import { ArticleService } from '@/shared/api/ArticleService.ts'
-import type { ArticleView } from '@meindonsa/techwatch-api/models'
 
 const loading = ref(false)
 const router = useRouter()
-const article = ref<ArticleView | any>(null)
+const article = ref<any>(null)
 const { formatDate } = datePipe()
 const fid = ref(router.currentRoute.value.params.fid as string)
 
 const retrieveArticle = async () => {
   loading.value = true
-  const { data } = await ArticleService.retrieveArticle(fid.value)
-  if (data) {
-    article.value = data
-  }
-  loading.value = false
+
 }
 onMounted(() => {
   if (fid.value) retrieveArticle()

@@ -1,9 +1,11 @@
 import { isUrl } from '@/shared/service/Utils.ts'
 import axios from 'axios'
+import useToasterStore from '@/core/stores/UseToasterStore.ts'
 
 const API_SECRET_TOKEN = import.meta.env.VITE_API_SECRET_TOKEN
 
 const UseWatcher =()=>{
+  const toasterStore = useToasterStore()
   const WATCHER_URL = 'https://techwatch-api-ac3l.vercel.app/'
   const instance = axios.create({
     baseURL: WATCHER_URL,
@@ -20,8 +22,7 @@ const UseWatcher =()=>{
        return res.data
      })
      .catch((err) => {
-       console.log(err.response.data.error)
-       //throw new Error(`Unable to detect: ${err.message}`)
+       toasterStore.error({ text: err.response.data.error })
      })
   }
   return {

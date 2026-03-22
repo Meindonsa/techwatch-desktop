@@ -2,13 +2,10 @@
 import { useRoute, useRouter } from 'vue-router'
 import { computed, ref, watch } from 'vue'
 import { useFilterStore } from '@/core/stores/filter.ts'
-import type { ArticlesView } from '@meindonsa/techwatch-api/models'
-import { ArticleService } from '@/shared/api/ArticleService.ts'
 import ArticleITem from '@/features/home/ArticleITem.vue'
 import Paginator from '@/shared/components/Paginator.vue'
 import Skeleton from '@/shared/components/Skeleton.vue'
 import { useArticleStore } from '@/core/stores/ArticleStore.ts'
-import type { Article } from '@/core/database/db.ts'
 
 const route = useRoute()
 const router = useRouter()

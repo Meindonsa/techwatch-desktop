@@ -3,19 +3,15 @@ import { useFilterStore } from '@/core/stores/filter.ts'
 import ArticleITem from '@/features/home/ArticleITem.vue'
 import Sources from '@/features/home/Sources.vue'
 import { computed, ref, watchEffect } from 'vue'
-import { ArticleService } from '@/shared/api/ArticleService.ts'
-import type { ArticlesView } from '@meindonsa/techwatch-api/models'
 import Button from '@/shared/components/Button.vue'
 import { useRouter } from 'vue-router'
 import Skeleton from '@/shared/components/Skeleton.vue'
-import { fakeArticles } from '@/core/database/FakeData.ts'
-import { useArticleStore } from '@/core/stores/ArticleStore.ts'
 
 const router = useRouter()
 const loading = ref(false)
 const useFilter = useFilterStore()
 const searchValue = computed(() => useFilter.searchValue)
-const articles = ref<ArticlesView[]>([])
+const articles = ref<any[]>([])
 
 const retrieveArticles = async (pageIndex = 0, searchKey: null | string = null) => {
   //loading.value = true
