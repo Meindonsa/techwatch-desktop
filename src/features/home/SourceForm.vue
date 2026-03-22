@@ -2,7 +2,9 @@
 import { computed, ref } from 'vue'
 import { hasInvalidString, isUrl } from '@/shared/service/Utils.ts'
 import Button from '@/shared/components/Button.vue'
+import UseWatcher from '@/core/watcher/api.ts'
 
+const useWatcher = UseWatcher();
 const emit = defineEmits(['onCancel', 'onSave'])
 const form = ref({
   name: '',
@@ -18,7 +20,15 @@ const onCancel = () => {
 }
 
 const onclick = () => {
-  emit('onSave', form.value)
+  const url  = form.value.url;
+  console.log(url);
+  //if(!isUrl(form.value.url)) return;
+  const res = useWatcher.detect(url);
+  //emit('onSave', form.value)
+}
+
+const detect = () => {
+
 }
 </script>
 
