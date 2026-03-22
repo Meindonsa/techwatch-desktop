@@ -31,8 +31,8 @@ const onclick = async () => {
   await useWatcher
     .detect(url)
     .then((result) => {
-      console.log(result.data)
-      //emit('onSave', form.value)
+      const res = { name:form.value.name, ...result.data };
+      emit('onSave', res)
     })
     .catch((e) => {
       return

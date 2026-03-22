@@ -3,30 +3,39 @@ import { computed, onMounted, ref } from 'vue'
 import SourceForm from '@/features/home/SourceForm.vue'
 import { isUrl } from '@/shared/service/Utils.ts'
 import { useSourcesStore } from '@/core/stores/SourceStore.ts'
+import useToasterStore from '@/core/stores/UseToasterStore.ts'
 
 const loading = ref(false)
 const errorMessage = ref<null | string>(null)
 const showSource = ref(false)
 const sourcesStore = useSourcesStore()
+const toasterStore = useToasterStore()
 
-const sources = computed(() => sourcesStore.sources);
+const sources = computed(() => sourcesStore.sources)
 
 const hideForm = () => {
   showSource.value = !showSource.value
 }
 
 const onSubmit = (event: any) => {
-  const req = event
+  const req = {
+    name: event.name,
+    url: event.originalUrl,
+    feed_url: event.feedUrl,
+  }
   loading.value = true
   sourcesStore
     .addSource(req)
     .then(() => {
       hideForm()
+      toasterStore.success({ text: `${req.name} enrgistré avec succès !` })
     })
     .catch((error) => {
       console.error(error)
     })
-    .finally(() => { loading.value = false })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 onMounted(() => sourcesStore.fetchSources())

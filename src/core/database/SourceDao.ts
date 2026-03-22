@@ -11,9 +11,7 @@ export const SourcesDao = {
 
   add(source: Omit<Source, 'id' | 'created_at' | 'last_fetched_at'>): Promise<number> {
     return db.sources.add({
-      ...source,
-      type: "rss",
-      feed_url: "url",
+     ...source,
       status: source.status ?? 'active',
       created_at: Date.now(),
       last_fetched_at: null,
