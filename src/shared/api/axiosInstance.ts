@@ -1,16 +1,19 @@
 import axios from 'axios';
+import useToasterStore from '@/core/stores/UseToasterStore.ts'
+
+const WATCHER_URL = 'https://techwatch-api-ac3l.vercel.app/';
+const API_SECRET_TOKEN = import.meta.env.VITE_API_SECRET_TOKEN;
+
 
 const api = axios.create({
-  baseURL: 'http://localhost:23000/services-layer',
+  baseURL: WATCHER_URL,
   timeout: 30000,
 })
 
 api.interceptors.request.use(
   (config) => {
-   /* const token = UserService.getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }*/
+    config.headers.Authorization = `Bearer ${API_SECRET_TOKEN}`;
+    config.headers.setContentType('application/json')
     return config;
   },
   (error) => Promise.reject(error)
@@ -19,14 +22,8 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('access_token');
-      window.location.href = '/';
-    }
-    if (error.response?.status === 406) {
-      //alertService.error(error.response?.data.details[0]);
-      console.error(error.response?.data?.message);
-    }
+    const toasterStore = useToasterStore()
+    toasterStore.error({ text: error.response.data.error })
     return Promise.reject(error);
   }
 );

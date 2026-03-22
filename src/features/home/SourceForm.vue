@@ -2,9 +2,11 @@
 import { computed, ref } from 'vue'
 import { hasInvalidString, isUrl } from '@/shared/service/Utils.ts'
 import Button from '@/shared/components/Button.vue'
-import UseWatcher from '@/core/watcher/api.ts'
+import UseWatcher from '@/shared/api/Watcher.ts'
 
-const useWatcher = UseWatcher();
+const useWatcher = UseWatcher()
+const label = ref<string>('Enregister')
+const loading = ref<boolean>(false)
 const emit = defineEmits(['onCancel', 'onSave'])
 const form = ref({
   name: '',
@@ -12,24 +14,36 @@ const form = ref({
 })
 
 const isValid = computed(() => {
-  return hasInvalidString(form.value.name, form.value.url) || !isUrl(form.value.url);
+  return (
+    hasInvalidString(form.value.name, form.value.url) || !isUrl(form.value.url) || loading.value
+  )
 })
 
 const onCancel = () => {
   emit('onCancel')
 }
 
-const onclick = () => {
-  const url  = form.value.url;
-  console.log(url);
-  //if(!isUrl(form.value.url)) return;
-  const res = useWatcher.detect(url);
-  //emit('onSave', form.value)
+const onclick = async () => {
+  const url = form.value.url
+  if (!isUrl(form.value.url)) return null
+  label.value = 'Détection du flux ...'
+  loading.value = true
+  await useWatcher
+    .detect(url)
+    .then((result) => {
+      console.log(result.data)
+      //emit('onSave', form.value)
+    })
+    .catch((e) => {
+      return
+    })
+    .finally(() => {
+      label.value = 'Enregister'
+      loading.value = false
+    })
 }
 
-const detect = () => {
-
-}
+async function detect() {}
 </script>
 
 <template>
@@ -48,7 +62,7 @@ const detect = () => {
   />
   <div class="w-full flex justify-between">
     <Button label="Annuler" @onclick="onCancel" severity="secondary" />
-    <Button label="Enregister" @onclick="onclick" :disabled="isValid" severity="primary" />
+    <Button :label="label" @onclick="onclick" :disabled="isValid" severity="primary" />
   </div>
 </template>
 
