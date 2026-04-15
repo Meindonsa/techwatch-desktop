@@ -37,7 +37,6 @@ watchEffect(() => {
 const seeAll = () => {
   router.push('/articles')
 }
-
 </script>
 
 <template>

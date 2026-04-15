@@ -33,7 +33,7 @@ const label = computed(() => scrappingStore.state)
   border-radius: 3px;
   left: 3%;
   z-index: 1000;
-  color: #615FFF; /*#00dc82;*/
+  color: #615fff; /*#00dc82;*/
   font-size: 12px;
   padding: 0.3rem 1rem;
   box-shadow: 0 0 20px #030712;

@@ -1,37 +1,25 @@
 import Dexie, { type Table } from 'dexie'
 import type { FetchStatus, SourceStatus, SourceType } from './DbType'
 
-export interface Source {
+export interface Feed {
   id?: number
   name: string
-  url: string
+  original_url: string
   feed_url: string
   type: SourceType
-  status: SourceStatus
   created_at: number
-  last_fetched_at: number | null
 }
 
 export interface Article {
   id?: number
-  url: string
-  source_id: number
   title: string
+  link: string
+  pub_date: string
   summary: string | null
-  content: string | null
   author: string | null
-  thumbnail_url: string | null
-  published_at: number
-  saved_at: number
-}
-
-export interface FetchLog {
-  id?: number
-  source_id: number
-  status: FetchStatus
-  articles_found: number
-  error_message: string | null
-  fetched_at: number
+  image: string | null
+  feed_id: number
+  fetched_at: string | null
 }
 
 export interface Setting {
@@ -49,27 +37,18 @@ export interface Settings {
 // ─── Database ──────────────────────────────────────────────────────────────────
 
 class FeedReaderDatabase extends Dexie {
-  sources!:    Table<Source,    number>
-  articles!:   Table<Article,   number>
-  fetch_logs!: Table<FetchLog,  number>
-  settings!:   Table<Setting,   string>
+  sources!: Table<Feed, number>
+  articles!: Table<Article, number>
+  settings!: Table<Setting, string>
 
   constructor() {
     super('Techwatch')
 
     this.version(1).stores({
-      sources: '++id, name, url, type, &feed_url, status, created_at, last_fetched_at',
-      articles: '++id, &url, source_id, published_at, saved_at',
-      fetch_logs: '++id, source_id, status, fetched_at',
+      feed: '&id, name, original_url, &feed_url, type, created_at',
+      articles:
+        '&id, title,  &link, source_id, pub_date, summary, author, image, feed_id, fetched_at',
       settings: 'key',
-    })
-
-    this.on('populate', async () => {
-      await this.settings.bulkAdd([
-        { key: 'cron_interval_min', value: '60'    },
-        { key: 'notify_email',      value: 'false' },
-        { key: 'notify_push',       value: 'false' },
-      ])
     })
   }
 }

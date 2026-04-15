@@ -7,8 +7,8 @@ export const ArticleDao = {
     total: number
   }> {
     let query = sourceId
-      ? db.articles.where('source_id').equals(sourceId).reverse()
-      : db.articles.orderBy('published_at').reverse()
+      ? db.articles.where('feed_id').equals(sourceId).reverse()
+      : db.articles.orderBy('fetched_at').reverse()
     const total = await query.count()
 
     if (limit) query = query.limit(limit)
@@ -26,12 +26,9 @@ export const ArticleDao = {
    * Insère un article en ignorant silencieusement les doublons (url unique).
    * Retourne l'id inséré ou null si doublon.
    */
-  async addIfNotExists(article: Omit<Article, 'id' | 'saved_at'>): Promise<number | null> {
+  async addIfNotExists(article: Article): Promise<number | null> {
     try {
-      return await db.articles.add({
-        ...article,
-        saved_at: Date.now(),
-      })
+      return await db.articles.add(article)
     } catch (e) {
       if ((e as Error).name === 'ConstraintError') return null
       throw e
@@ -42,17 +39,13 @@ export const ArticleDao = {
    * Insère un tableau d'articles en ignorant les doublons.
    * Retourne le nombre de nouveaux articles insérés.
    */
-  async bulkAddIfNotExists(articles: Omit<Article, 'id' | 'saved_at'>[]): Promise<number> {
+  async bulkAddIfNotExists(articles: Article[]): Promise<number> {
     let inserted = 0
     for (const article of articles) {
       const id = await ArticleDao.addIfNotExists(article)
       if (id !== null) inserted++
     }
     return inserted
-  },
-
-  remove(id: number): Promise<void> {
-    return db.articles.delete(id)
   },
 
   countBySource(sourceId: number): Promise<number> {

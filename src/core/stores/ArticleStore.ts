@@ -17,8 +17,7 @@ export interface CreateArticlePayload {
   saved_at: number
 }
 export const useArticleStore = defineStore('article', () => {
-
-  const total = ref(0);
+  const total = ref(0)
   const articles: Ref<any[]> = ref([])
   const loading = ref(false)
   const error = ref<string | null>(null)
@@ -28,9 +27,9 @@ export const useArticleStore = defineStore('article', () => {
   })
 
   async function retrieveArticles(index: number = 0, size: number = 5) {
-    const response = await ArticleDao.getAll({offset: index , limit: size});
-    articles.value = response.articles;
-    total.value = response.total;
+    const response = await ArticleDao.getAll({ offset: index, limit: size })
+    articles.value = response.articles
+    total.value = response.total
   }
 
   const create = async (article: Omit<Article, 'id' | 'saved_at'>) => {

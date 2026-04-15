@@ -29,8 +29,8 @@ const onFilter = (name: string) => {
           Tech-watch
         </span>
       </RouterLink>
-       <SearchbBar/>
-<!--      <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+      <SearchbBar />
+      <!--      <div class="hidden w-full md:block md:w-auto" id="navbar-default">
         <ul
           class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-default rounded-base bg-neutral-secondary-soft md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-neutral-primary"
         >
