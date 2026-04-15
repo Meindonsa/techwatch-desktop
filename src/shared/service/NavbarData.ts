@@ -22,3 +22,22 @@ export const SourceFilters: SourceType[] = [
     label: 'Cybersecurity',
   },
 ]
+
+export interface ProfileMenu {
+  icon?: string
+  label?: string
+  action?: string
+}
+
+export const ProfileMenu: ProfileMenu[] = [
+  {
+    icon: 'bx bx-user',
+    label: 'Mon profile',
+    action: 'PROFILE',
+  },
+  {
+    icon: 'bx bx-power-off',
+    label: 'Déconnexion',
+    action: 'LOGOUT',
+  },
+]
