@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { SourceFilters } from '@/shared/service/NavbarData.ts'
+import { ProfileMenu, SourceFilters } from '@/shared/service/NavbarData.ts'
 import { useFilterStore } from '@/core/stores/filter.ts'
 import SearchbBar from '@/shared/components/SearchbBar.vue'
-
+import Dropdown from '@/shared/components/Dropdown.vue'
+import { useUserStore } from '@/core/stores/UserStore.ts'
+import { useRouter } from 'vue-router'
+const menu = ProfileMenu
 const filter = ref('ALL')
+const router = useRouter()
+const userStore = useUserStore()
 const filters = ref(SourceFilters)
 const useFilter = useFilterStore()
 
@@ -18,6 +23,13 @@ const onFilter = (name: string) => {
   filter.value = name
   useFilter.setFilter(name)
 }
+
+const onProfileClick = (action: string) => {
+  if (action == 'LOGOUT') {
+    userStore.logout()
+    router.push("/")
+  }
+}
 </script>
 
 <template>
@@ -30,6 +42,13 @@ const onFilter = (name: string) => {
         </span>
       </RouterLink>
       <SearchbBar />
+      <div class="flex items-center">
+        <button class="text-2xl text-white cursor-pointer me-5">
+          <i class="bx bx-refresh"></i>
+        </button>
+        <Dropdown icon="bx bx-user-circle" @onClick="onProfileClick($event)" :options="menu" />
+      </div>
+
       <!--      <div class="hidden w-full md:block md:w-auto" id="navbar-default">
         <ul
           class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-default rounded-base bg-neutral-secondary-soft md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-neutral-primary"
