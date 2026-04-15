@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
+    "@meindonsa/security-storage": "1.0.0",
     "axios": "^1.15.0",
     "boxicons": "^2.1.4",
     "dexie": "^4.3.0",
