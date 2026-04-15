@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import SourceForm from '@/features/home/SourceForm.vue'
-import { isUrl } from '@/shared/service/Utils.ts'
 import { useSourcesStore } from '@/core/stores/SourceStore.ts'
 import useToasterStore from '@/core/stores/UseToasterStore.ts'
 import { useScrappingStore } from '@/core/stores/ScrappingStore.ts'
@@ -31,7 +30,7 @@ const onSubmit = (event: any) => {
     .then(() => {
       hideForm()
       toasterStore.success({ text: `${req.name} enrgistré avec succès !` })
-      scrappingSource.scrap(req.feed_url);
+      //scrappingSource.scrap(req.feed_url);
     })
     .catch((error) => {
       console.error(error)
@@ -90,7 +89,7 @@ onMounted(() => sourcesStore.fetchSources())
           class="source text-sm flex justify-between items-center text-body truncate mb-2 hover:text-indigo-500 transition ease-in-out duration-300"
         >
           <a
-            :href="source?.url"
+            :href="source?.original_url"
             target="_blank"
             class="cursor-pointer hover:underline hover:underline-offset-4"
           >

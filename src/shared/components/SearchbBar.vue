@@ -8,7 +8,6 @@ const searchKey = ref('')
 const onSearching = (): void => {
   useFilter.search(searchKey.value.trim())
 }
-
 </script>
 
 <template>

@@ -7,20 +7,3 @@ export interface GetArticlesOptions {
   limit?: number
   offset?: number
 }
-
-export interface FetchResult {
-  sourceId: number
-  articlesFound: number
-  inserted: number
-  error: string | null
-}
-
-export type WorkerInMessage =
-  | { type: 'START'; intervalMs: number }
-  | { type: 'STOP' }
-  | { type: 'UPDATE_INTERVAL'; intervalMs: number }
-
-export type WorkerOutMessage =
-  | { type: 'TICK' }
-  | { type: 'STARTED'; intervalMs: number }
-  | { type: 'STOPPED' }

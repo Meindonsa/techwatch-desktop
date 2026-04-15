@@ -1,7 +1,7 @@
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
+@import 'tailwindcss';
 @import 'boxicons';
+@plugin "@tailwindcss/typography";
 
 body {
-    @apply bg-gray-900;
+  @apply bg-gray-900;
 }

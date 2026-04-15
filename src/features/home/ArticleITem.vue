@@ -15,10 +15,10 @@ const { formatDate } = datePipe()
         {{ article.title }}
       </h5>
       <div class="text-gray-300">
-        {{article.summary}}
+        {{ article.summary }}
       </div>
       <div class="flex justify-between w-full text-sm text-gray-500">
-        <span>Depuis : {{ article.source_id }} {{ ' par: ' + (article.author || "Inconnu") }}</span>
+        <span>Depuis : {{ article.source_id }} {{ ' par: ' + (article.author || 'Inconnu') }}</span>
         <span>{{ formatDate(article.fetchedDate, 'mediumDate') }}</span>
       </div>
     </div>

@@ -1,41 +1,28 @@
-import { db, type Source } from '@/core/database/db.ts'
-import { hasInvalidString } from '@/shared/service/Utils.ts'
+import { db, type Feed } from '@/core/database/db.ts'
 
 export const SourcesDao = {
-  getAll(): Promise<Source[]> {
+  getAll(): Promise<Feed[]> {
     return db.sources.toArray()
   },
 
-  getById(id: number): Promise<Source | undefined> {
+  getById(id: number): Promise<Feed | undefined> {
     return db.sources.get(id)
   },
 
-  getByFeedUrl(value: any): Promise<Source | undefined> {
-    return db.sources.get({ feed_url: value });
+  getByFeedUrl(value: any): Promise<Feed | undefined> {
+    return db.sources.get({ feed_url: value })
   },
 
-  add(source: Omit<Source, 'id' | 'created_at' | 'last_fetched_at'>): Promise<number> {
+  add(source: Feed): Promise<number> {
     return db.sources.add({
-     ...source,
-      status: source.status ?? 'active',
-      created_at: Date.now(),
-      last_fetched_at: null,
+      ...source,
     })
-  },
-
-  update(id: number, changes: Partial<Omit<Source, 'id'>>): Promise<number> {
-    return db.sources.update(id, changes)
   },
 
   remove(id: number): Promise<void> {
-    return db.transaction('rw', db.sources, db.articles, db.fetch_logs, async () => {
-      await db.articles.where('source_id').equals(id).delete()
-      await db.fetch_logs.where('source_id').equals(id).delete()
+    return db.transaction('rw', db.sources, db.articles, async () => {
+      await db.articles.where('feed_id').equals(id).delete()
       await db.sources.delete(id)
     })
-  },
-
-  markFetched(id: number): Promise<number> {
-    return db.sources.update(id, { last_fetched_at: Date.now() })
   },
 }

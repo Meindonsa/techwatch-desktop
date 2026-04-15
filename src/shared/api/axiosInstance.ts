@@ -1,9 +1,8 @@
-import axios from 'axios';
+import axios from 'axios'
 import useToasterStore from '@/core/stores/UseToasterStore.ts'
 
-const WATCHER_URL = 'https://techwatch-api-ac3l.vercel.app/';
-const API_SECRET_TOKEN = import.meta.env.VITE_API_SECRET_TOKEN;
-
+const WATCHER_URL = 'https://techwatch-api-ac3l.vercel.app/'
+const API_SECRET_TOKEN = import.meta.env.VITE_API_SECRET_TOKEN
 
 const api = axios.create({
   baseURL: WATCHER_URL,
@@ -12,20 +11,20 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    config.headers.Authorization = `Bearer ${API_SECRET_TOKEN}`;
+    config.headers.Authorization = `Bearer ${API_SECRET_TOKEN}`
     config.headers.setContentType('application/json')
-    return config;
+    return config
   },
-  (error) => Promise.reject(error)
-);
+  (error) => Promise.reject(error),
+)
 
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     const toasterStore = useToasterStore()
     toasterStore.error({ text: error.response.data.error })
-    return Promise.reject(error);
-  }
-);
+    return Promise.reject(error)
+  },
+)
 
-export default api;
+export default api

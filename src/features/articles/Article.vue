@@ -11,7 +11,6 @@ const fid = ref(router.currentRoute.value.params.fid as string)
 
 const retrieveArticle = async () => {
   loading.value = true
-
 }
 onMounted(() => {
   if (fid.value) retrieveArticle()

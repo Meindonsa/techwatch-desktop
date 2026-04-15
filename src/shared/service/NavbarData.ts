@@ -1,5 +1,5 @@
 interface SourceType {
-  name: string,
+  name: string
   label: string
   icon?: string
 }

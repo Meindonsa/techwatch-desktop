@@ -1,11 +1,6 @@
-
-
-
 export function hasInvalidString(...value: string[]) {
-  if(value.length == 0) return true
-  return value.some(
-    (item: string) => item.trim().length == 0
-  );
+  if (value.length == 0) return true
+  return value.some((item: string) => item.trim().length == 0)
 }
 
 export function isUrl(value: string) {
@@ -22,6 +17,6 @@ export function isUrl(value: string) {
 }
 
 function includesProtocol(value: string) {
-  const protocols = ["www.", 'https://', 'http://'];
+  const protocols = ['www.', 'https://', 'http://']
   return protocols.some((protocol) => value.startsWith(protocol))
 }
