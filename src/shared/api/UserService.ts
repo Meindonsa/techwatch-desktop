@@ -5,7 +5,7 @@ const axios = api
 const UserService = {
 
   async login(data: Register) {
-    return axios({method: 'POST', url: 'users/login', data})
+    return axios({method: 'POST', url: 'auth/login', data})
   },
 
   async register(data: Register) {

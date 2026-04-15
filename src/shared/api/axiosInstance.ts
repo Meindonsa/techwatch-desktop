@@ -11,7 +11,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    config.headers.Authorization = `Bearer ${API_SECRET_TOKEN}`
+    config.headers['X-App-Token'] = `cs ${API_SECRET_TOKEN}`
     config.headers.setContentType('application/json')
     return config
   },

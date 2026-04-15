@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import type { Register } from '@/core/database/DbType.ts'
 import { useUserStore } from '@/core/stores/UserStore.ts'
 import { hasInvalidString, isNull } from '@/shared/service/Utils.ts'
+import { useRouter } from 'vue-router'
+import userService from '@/shared/api/UserService.ts'
 
+const router = useRouter()
 const userStore = useUserStore()
 const loading = ref(false)
 const loginForm = ref<Register>({
@@ -28,12 +31,18 @@ const login = () => {
     .login(data)
     .then(() => {
       console.log(data)
+      userStore.saveLogin(data)
+      router.push('/home')
     })
     .catch((err) => {
       console.log(err)
     })
-    .finally(()=>loading.value = false)
+    .finally(() => (loading.value = false))
 }
+
+onMounted(() => {
+  if (userStore.getMe()) router.push('/home')
+})
 </script>
 
 <template>
