@@ -7,3 +7,13 @@ export interface GetArticlesOptions {
   limit?: number
   offset?: number
 }
+
+export interface User {
+  id: number
+  username: string
+}
+
+export interface Register {
+  password: string
+  username: string
+}

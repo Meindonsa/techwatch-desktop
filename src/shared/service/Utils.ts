@@ -20,3 +20,7 @@ function includesProtocol(value: string) {
   const protocols = ['www.', 'https://', 'http://']
   return protocols.some((protocol) => value.startsWith(protocol))
 }
+
+export function isNull(value: string) {
+  return value == null || value.trim().length == 0
+}

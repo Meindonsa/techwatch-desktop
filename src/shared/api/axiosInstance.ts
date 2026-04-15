@@ -1,7 +1,7 @@
 import axios from 'axios'
 import useToasterStore from '@/core/stores/UseToasterStore.ts'
 
-const WATCHER_URL = 'https://techwatch-api-ac3l.vercel.app/'
+const WATCHER_URL = import.meta.env.VITE_BACK_URL
 const API_SECRET_TOKEN = import.meta.env.VITE_API_SECRET_TOKEN
 
 const api = axios.create({
