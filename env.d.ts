@@ -1,2 +1,3 @@
-/// <reference types="vite/client" />
-API_SECRET_TOKEN=YOUR_API_KEY
+VITE_API_SECRET_TOKEN='<YOUR_API_TOKEN>'
+VITE_BACK_URL = '<BACKEND_URL EX:http://localhost:3000/>'
+VITE_SOCKET_URL='<BACKEND_WS_URL EX: ws//localhost:3000/ws/>'

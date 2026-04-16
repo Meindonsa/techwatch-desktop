@@ -9,7 +9,7 @@ const UserService = {
   },
 
   async register(data: Register) {
-    return axios({method: 'POST', url: 'users', data})
+    return axios({ method: 'POST', url: 'auth/register', data })
   }
 }
 
