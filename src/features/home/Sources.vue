@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import SourceForm from '@/features/home/SourceForm.vue'
-import { useSourcesStore } from '@/core/stores/SourceStore.ts'
+import { useFeedStore } from '@/core/stores/FeedStore.ts'
 import useToasterStore from '@/core/stores/UseToasterStore.ts'
 import { useScrappingStore } from '@/core/stores/ScrappingStore.ts'
 
 const loading = ref(false)
 const errorMessage = ref<null | string>(null)
 const showSource = ref(false)
-const sourcesStore = useSourcesStore()
+const feedStore = useFeedStore()
 const toasterStore = useToasterStore()
-const scrappingSource = useScrappingStore()
 
-const sources = computed(() => sourcesStore.sources)
+const sources = computed(() => feedStore.sources)
 
 const hideForm = () => {
   showSource.value = !showSource.value
@@ -20,20 +19,11 @@ const hideForm = () => {
 
 const onSubmit = (event: any) => {
   loading.value = true
-  const req = {
-    name: event.name,
-    url: event.originalUrl,
-    feed_url: event.feedUrl,
-  }
-  sourcesStore
-    .addSource(req)
-    .then(() => {
+  feedStore.subscribe(event)
+    .then((response: any) => {
       hideForm()
-      toasterStore.success({ text: `${req.name} enrgistré avec succès !` })
-      //scrappingSource.scrap(req.feed_url);
-    })
-    .catch((error) => {
-      console.error(error)
+      toasterStore.success({ text: `${response?.data.feed.name} enrgistré avec succès !` })
+      feedStore.reloadSource();
     })
     .finally(() => {
       loading.value = false
@@ -42,7 +32,7 @@ const onSubmit = (event: any) => {
 
 const onDelete = (event: any) => {
   loading.value = true
-  sourcesStore
+  feedStore
     .removeSource(event.id)
     .then(() => {
       toasterStore.success({ text: `${event.name} supprimé avec succès !` })
@@ -55,7 +45,10 @@ const onDelete = (event: any) => {
     })
 }
 
-onMounted(() => sourcesStore.fetchSources())
+onMounted(() => {
+  feedStore.reloadSource();
+  feedStore.fetchSources()
+})
 </script>
 
 <template>

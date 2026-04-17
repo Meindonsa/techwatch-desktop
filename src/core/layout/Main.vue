@@ -11,8 +11,8 @@ const userStore = useUserStore()
 const socket = new WebSocket('ws://localhost:3000/ws/borisaxel')
 
 socket.onmessage = (event) => {
-  console.log(event)
-  console.log('Message from server ', event.data)
+  //console.log(event)
+  //console.log('Message from server ', event.data)
 }
 
 onMounted(() => {

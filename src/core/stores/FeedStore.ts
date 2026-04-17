@@ -1,14 +1,17 @@
 import { ref, readonly } from 'vue'
 import { defineStore } from 'pinia'
 import type { Feed } from '@/core/database/db.ts'
-import { SourcesDao } from '@/core/database/SourceDao.ts'
+import { FeedDao } from '@/core/database/FeedDao.ts'
+import FeedService from '@/shared/api/FeedService.ts'
+import { useUserStore } from '@/core/stores/UserStore.ts'
 
 export interface CreateSourcePayload {
   name: string
   url: string
 }
 
-export const useSourcesStore = defineStore('sources', () => {
+export const useFeedStore = defineStore('sources', () => {
+  const userStore = useUserStore()
   const sources = ref<Feed[]>([])
   const isLoading = ref(false)
   const error = ref<string | null>(null)
@@ -18,7 +21,7 @@ export const useSourcesStore = defineStore('sources', () => {
     error.value = null
 
     try {
-      sources.value = await SourcesDao.getAll()
+      sources.value = await FeedDao.getAll()
     } catch (e) {
       error.value = (e as Error).message
     } finally {
@@ -26,11 +29,27 @@ export const useSourcesStore = defineStore('sources', () => {
     }
   }
 
+  const subscribe = (payload:any) =>{
+    return FeedService.subscribe(userStore.getMe()?.username, payload);
+  }
+
+  const reloadSource = () => {
+    FeedService.retrieveFeeds(userStore.getMe()?.username).then(async (feeds: any) => {
+      const numbers: number = await FeedDao.bulkAddIfNotExists(feeds.data);
+      if(numbers>0) getFeeds();
+    })
+  }
+
+  const getFeeds = () =>{
+    FeedDao.getAll().then((res)=>{
+      sources.value = res
+    })
+  }
   async function addSource(payload: CreateSourcePayload | any): Promise<boolean> {
     error.value = null
 
     try {
-      await SourcesDao.add(payload)
+      await FeedDao.add(payload)
       await fetchSources()
       return true
     } catch (e) {
@@ -43,7 +62,7 @@ export const useSourcesStore = defineStore('sources', () => {
     error.value = null
 
     try {
-      await SourcesDao.remove(id)
+      await FeedDao.remove(id)
       sources.value = sources.value.filter((s: Feed) => s.id !== id)
       await fetchSources()
       return true
@@ -58,8 +77,10 @@ export const useSourcesStore = defineStore('sources', () => {
     isLoading: readonly(isLoading),
     error: readonly(error),
 
-    fetchSources,
+    subscribe,
     addSource,
+    reloadSource,
     removeSource,
+    fetchSources,
   }
 })

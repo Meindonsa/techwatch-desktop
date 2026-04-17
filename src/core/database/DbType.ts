@@ -17,3 +17,8 @@ export interface Register {
   password: string
   username: string
 }
+
+export interface LoginResponse {
+  token: string
+  user: User
+}
