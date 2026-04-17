@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import type { Register } from '@/core/database/DbType.ts'
+import type { LoginResponse, Register } from '@/core/database/DbType.ts'
 import { useUserStore } from '@/core/stores/UserStore.ts'
 import { hasInvalidString, isNull } from '@/shared/service/Utils.ts'
 import { useRouter } from 'vue-router'
@@ -29,9 +29,8 @@ const login = () => {
   if (hasInvalidString(data.password, data.username)) return
   userStore
     .login(data)
-    .then(() => {
-      console.log(data)
-      userStore.saveLogin(data)
+    .then((response: any) => {
+      userStore.saveLogin(response.data as LoginResponse)
       router.push('/home')
     })
     .catch((err) => {

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, readonly, type Ref, ref } from 'vue'
-import type { CreateSourcePayload } from '@/core/stores/SourceStore.ts'
+import type { CreateSourcePayload } from '@/core/stores/FeedStore.ts'
 import { ArticleDao } from '@/core/database/ArticleDao.ts'
 import type { Article } from '@/core/database/db.ts'
 

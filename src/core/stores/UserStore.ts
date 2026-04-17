@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { onBeforeMount, onMounted, ref } from 'vue'
-import type { Register, User } from '@/core/database/DbType.ts'
+import type { LoginResponse, Register, User } from '@/core/database/DbType.ts'
 import UserService from '@/shared/api/UserService.ts'
 import StorageService from '@/shared/service/StoageService.ts'
 
@@ -16,7 +16,7 @@ export const useUserStore = defineStore('user', () => {
     return UserService.login(data)
   }
 
-  const saveLogin = (data: any) => {
+  const saveLogin = (data: LoginResponse) => {
     user.value = data.user
     StorageService.setItem(WATCHER, data)
   }
@@ -26,7 +26,7 @@ export const useUserStore = defineStore('user', () => {
     StorageService.remove(WATCHER)
   }
 
-  const getMe = ()=> {
+  const getMe: User | any = () => {
     user.value = StorageService.getItem(WATCHER)?.user
     return user.value
   }

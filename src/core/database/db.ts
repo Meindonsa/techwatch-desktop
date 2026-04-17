@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie'
-import type { FetchStatus, SourceStatus, SourceType } from './DbType'
+import type { SourceType } from './DbType'
 
 export interface Feed {
   id?: number
@@ -37,7 +37,7 @@ export interface Settings {
 // ─── Database ──────────────────────────────────────────────────────────────────
 
 class FeedReaderDatabase extends Dexie {
-  sources!: Table<Feed, number>
+  feeds!: Table<Feed, number>
   articles!: Table<Article, number>
   settings!: Table<Setting, string>
 
@@ -45,9 +45,9 @@ class FeedReaderDatabase extends Dexie {
     super('Techwatch')
 
     this.version(1).stores({
-      feed: '&id, name, original_url, &feed_url, type, created_at',
+      feeds: 'id, name, original_url, &feed_url, type, created_at',
       articles:
-        '&id, title,  &link, source_id, pub_date, summary, author, image, feed_id, fetched_at',
+        'id, title,  &link, pub_date, summary, author, image, feed_id, fetched_at',
       settings: 'key',
     })
   }
