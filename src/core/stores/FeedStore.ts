@@ -45,6 +45,7 @@ export const useFeedStore = defineStore('sources', () => {
       sources.value = res
     })
   }
+
   async function addSource(payload: CreateSourcePayload | any): Promise<boolean> {
     error.value = null
 
@@ -62,9 +63,11 @@ export const useFeedStore = defineStore('sources', () => {
     error.value = null
 
     try {
+      await FeedService.unsubscribe(userStore.getMe()?.username, id);
       await FeedDao.remove(id)
       sources.value = sources.value.filter((s: Feed) => s.id !== id)
       await fetchSources()
+      getFeeds()
       return true
     } catch (e) {
       error.value = (e as Error).message
