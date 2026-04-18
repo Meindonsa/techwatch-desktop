@@ -3,6 +3,8 @@ import { computed, readonly, type Ref, ref } from 'vue'
 import type { CreateSourcePayload } from '@/core/stores/FeedStore.ts'
 import { ArticleDao } from '@/core/database/ArticleDao.ts'
 import type { Article } from '@/core/database/db.ts'
+import { ArticleService } from '@/shared/api/ArticleService.ts'
+import { useUserStore } from '@/core/stores/UserStore.ts'
 
 export interface CreateArticlePayload {
   id?: number
@@ -17,6 +19,7 @@ export interface CreateArticlePayload {
   saved_at: number
 }
 export const useArticleStore = defineStore('article', () => {
+  const userStore = useUserStore()
   const total = ref(0)
   const articles: Ref<any[]> = ref([])
   const loading = ref(false)
@@ -32,15 +35,30 @@ export const useArticleStore = defineStore('article', () => {
     total.value = response.total
   }
 
-  const create = async (article: Omit<Article, 'id' | 'saved_at'>) => {
-    loading.value = true
-    try {
-      await ArticleDao.addIfNotExists(article)
-    } catch (e) {
-      error.value = (e as Error).message
-    } finally {
-      loading.value = false
-    }
+  const loadArticles = () => {
+    ArticleService.retrieveArticles(userStore.getMe()?.username).then(async (response) => {
+      try {
+        await ArticleDao.bulkAddIfNotExists(response.data)
+        await retrieveArticles()
+      } catch (e) {
+        error.value = (e as Error).message
+      } finally {
+        loading.value = false
+      }
+    })
+  }
+
+  const loadFeedArticles = (feedId: number) => {
+    ArticleService.retrieveFeedArticles(userStore.getMe()?.username, feedId).then(async (response) => {
+      try {
+        await ArticleDao.addIfNotExists(response.data)
+        await retrieveArticles()
+      } catch (e) {
+        error.value = (e as Error).message
+      } finally {
+        loading.value = false
+      }
+    })
   }
 
   return {
@@ -48,7 +66,8 @@ export const useArticleStore = defineStore('article', () => {
     articles: readonly(articles),
     loading: readonly(loading),
 
-    create,
+    loadArticles,
+    loadFeedArticles,
     retrieveArticles,
   }
 })

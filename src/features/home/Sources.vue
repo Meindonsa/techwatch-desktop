@@ -3,13 +3,14 @@ import { computed, onMounted, ref } from 'vue'
 import SourceForm from '@/features/home/SourceForm.vue'
 import { useFeedStore } from '@/core/stores/FeedStore.ts'
 import useToasterStore from '@/core/stores/UseToasterStore.ts'
-import { useScrappingStore } from '@/core/stores/ScrappingStore.ts'
+import { useArticleStore } from '@/core/stores/ArticleStore.ts'
 
 const loading = ref(false)
 const errorMessage = ref<null | string>(null)
 const showSource = ref(false)
 const feedStore = useFeedStore()
 const toasterStore = useToasterStore()
+const articleStore = useArticleStore()
 
 const sources = computed(() => feedStore.sources)
 
@@ -19,11 +20,12 @@ const hideForm = () => {
 
 const onSubmit = (event: any) => {
   loading.value = true
-  feedStore.subscribe(event)
+  feedStore
+    .subscribe(event)
     .then((response: any) => {
       hideForm()
       toasterStore.success({ text: `${response?.data.feed.name} enrgistré avec succès !` })
-      feedStore.reloadSource();
+      feedStore.reloadSource(true, response?.data.feed.id)
     })
     .finally(() => {
       loading.value = false
@@ -36,6 +38,7 @@ const onDelete = (event: any) => {
     .removeSource(event.id)
     .then(() => {
       toasterStore.success({ text: `${event.name} supprimé avec succès !` })
+      articleStore.retrieveArticles()
     })
     .catch((error) => {
       console.error(error)
@@ -46,7 +49,6 @@ const onDelete = (event: any) => {
 }
 
 onMounted(() => {
-  feedStore.reloadSource();
   feedStore.fetchSources()
 })
 </script>
