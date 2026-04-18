@@ -1,14 +1,14 @@
 import api from '@/shared/api/axiosInstance.ts'
 import type { AxiosResponse } from 'axios'
 
+const axios = api
 export const ArticleService = {
-  async retrieveArticles(req: any): Promise<AxiosResponse> {
-    // const request: PaginatedRequest = req
-    //return articleApi.retrieveArticles(request)
-    return new Promise<AxiosResponse>((resolve, reject) => {})
+
+  retrieveArticles(username: string): Promise<AxiosResponse> {
+    return axios({ method: 'GET', url: `articles/${username}/articles` })
   },
 
-  async retrieveArticle(fid: string): Promise<AxiosResponse> {
+  async retrieveFeedArticles(username: string, feedId: number): Promise<AxiosResponse> {
     return new Promise<AxiosResponse>((resolve, reject) => {})
   },
 }

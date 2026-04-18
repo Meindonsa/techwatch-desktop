@@ -4,6 +4,7 @@ import type { Feed } from '@/core/database/db.ts'
 import { FeedDao } from '@/core/database/FeedDao.ts'
 import FeedService from '@/shared/api/FeedService.ts'
 import { useUserStore } from '@/core/stores/UserStore.ts'
+import { useArticleStore } from '@/core/stores/ArticleStore.ts'
 
 export interface CreateSourcePayload {
   name: string
@@ -11,6 +12,7 @@ export interface CreateSourcePayload {
 }
 
 export const useFeedStore = defineStore('sources', () => {
+  const articleStore = useArticleStore()
   const userStore = useUserStore()
   const sources = ref<Feed[]>([])
   const isLoading = ref(false)
@@ -33,10 +35,12 @@ export const useFeedStore = defineStore('sources', () => {
     return FeedService.subscribe(userStore.getMe()?.username, payload);
   }
 
-  const reloadSource = () => {
+  const reloadSource = (withArticles: boolean = false, feedId: number) => {
     FeedService.retrieveFeeds(userStore.getMe()?.username).then(async (feeds: any) => {
       const numbers: number = await FeedDao.bulkAddIfNotExists(feeds.data);
       if(numbers>0) getFeeds();
+      if(withArticles && feedId> 0)
+        articleStore.loadFeedArticles(feedId)
     })
   }
 
