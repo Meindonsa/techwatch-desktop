@@ -1,17 +1,22 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { ProfileMenu, SourceFilters } from '@/shared/service/NavbarData.ts'
 import { useFilterStore } from '@/core/stores/filter.ts'
 import SearchbBar from '@/shared/components/SearchbBar.vue'
 import Dropdown from '@/shared/components/Dropdown.vue'
 import { useUserStore } from '@/core/stores/UserStore.ts'
 import { useRouter } from 'vue-router'
-const menu = ProfileMenu
-const filter = ref('ALL')
-const router = useRouter()
+import { useScrappingStore } from '@/core/stores/ScrappingStore.ts'
+
 const userStore = useUserStore()
 const filters = ref(SourceFilters)
 const useFilter = useFilterStore()
+const scrappingStore = useScrappingStore()
+
+const menu = ProfileMenu
+const filter = ref('ALL')
+const router = useRouter()
+const isRunning = computed(() => scrappingStore.isRunning)
 
 const isActive = (name: string) => {
   const activated = filter.value == name
@@ -27,8 +32,12 @@ const onFilter = (name: string) => {
 const onProfileClick = (action: string) => {
   if (action == 'LOGOUT') {
     userStore.logout()
-    router.push("/")
+    router.push('/')
   }
+}
+
+const reloadArticle = () => {
+  scrappingStore.reload()
 }
 </script>
 
@@ -43,8 +52,11 @@ const onProfileClick = (action: string) => {
       </RouterLink>
       <SearchbBar />
       <div class="flex items-center">
-        <button class="text-2xl text-white cursor-pointer me-5">
-          <i class="bx bx-refresh"></i>
+        <button
+          @click="reloadArticle()"
+          class="size-7.5 text-2xl flex justify-center items-center cursor-pointer me-5"
+        >
+          <i class="bx bx-refresh" :class="isRunning ? ' spin text-indigo-500' : 'text-white'"></i>
         </button>
         <Dropdown icon="bx bx-user-circle" @onClick="onProfileClick($event)" :options="menu" />
       </div>
@@ -68,4 +80,16 @@ const onProfileClick = (action: string) => {
   </nav>
 </template>
 
-<style scoped></style>
+<style scoped>
+.spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>

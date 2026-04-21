@@ -50,23 +50,25 @@ export const useArticleStore = defineStore('article', () => {
   const findArticle = async (id: number) => {
     try {
       return await ArticleDao.find(id)
-    }catch (e){
+    } catch (e) {
       error.value = (e as Error).message
       return null
     }
   }
 
   const loadFeedArticles = (feedId: number) => {
-    ArticleService.retrieveFeedArticles(userStore.getMe()?.username, feedId).then(async (response) => {
-      try {
-        await ArticleDao.addIfNotExists(response.data)
-        await retrieveArticles()
-      } catch (e) {
-        error.value = (e as Error).message
-      } finally {
-        loading.value = false
-      }
-    })
+    ArticleService.retrieveFeedArticles(userStore.getMe()?.username, feedId).then(
+      async (response) => {
+        try {
+          await ArticleDao.addIfNotExists(response.data)
+          await retrieveArticles()
+        } catch (e) {
+          error.value = (e as Error).message
+        } finally {
+          loading.value = false
+        }
+      },
+    )
   }
 
   return {

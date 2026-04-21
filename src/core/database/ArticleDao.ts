@@ -4,7 +4,7 @@ import { FeedDao } from '@/core/database/FeedDao.ts'
 
 export const ArticleDao = {
   async getAll({ sourceId, limit, offset }: GetArticlesOptions = {}): Promise<{
-    articles: Article[]| any[]
+    articles: Article[] | any[]
     total: number
   }> {
     let query = sourceId
@@ -65,6 +65,6 @@ export const ArticleDao = {
     const article: any = await db.articles.where('id').equals(id).first()
     if (article == undefined) return null
     article.feed = await FeedDao.getById(article?.feed_id)
-    return article;
+    return article
   },
 }
