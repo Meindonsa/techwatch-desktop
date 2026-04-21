@@ -30,7 +30,8 @@ export const useArticleStore = defineStore('article', () => {
   })
 
   async function retrieveArticles(index: number = 0, size: number = 5) {
-    const response = await ArticleDao.getAll({ offset: index, limit: size })
+    const offset = index * size
+    const response = await ArticleDao.getAll({ offset, limit: size })
     articles.value = response.articles
     total.value = response.total
   }
