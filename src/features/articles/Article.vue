@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { datePipe } from '@/shared/service/DateFormatter.ts'
 import { useArticleStore } from '@/core/stores/ArticleStore.ts'
+import { useMarked } from '@/shared/service/marked.ts'
+import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 
 const loading = ref(false)
 const router = useRouter()
@@ -11,10 +14,16 @@ const { formatDate } = datePipe()
 const fid = ref(router.currentRoute.value.params.fid as string)
 const articleStore = useArticleStore()
 
+const renderedContent = computed(() => {
+  if (!article.value.summary) return ''
+  const html = marked.parse(article.value.summary, { async: false }) as string
+  return DOMPurify.sanitize(html)
+})
+
 const retrieveArticle = async () => {
   loading.value = true
   const data = await articleStore.findArticle(Number(fid.value))
-  if(data) article.value = data;
+  if (data) article.value = data
 }
 
 onMounted(() => {
@@ -26,9 +35,15 @@ onMounted(() => {
   <main class="maw-w-screen w-screen min-h-screen bg-gray-900 py-20 px-10">
     <div class="flex justify-center gap-5">
       <div class="w-[95%] sm:w-[70%]">
-        <a target="_blank" :href="article?.link" class="text-2xl text-indigo-500 font-bold mb-5">{{ article?.title }}</a>
+        <a target="_blank" :href="article?.link" class="text-2xl text-indigo-500 font-bold mb-5">{{
+          article?.title
+        }}</a>
         <img class="w-full" v-if="article?.image" :src="article?.image" :alt="article?.title" />
-        <div class="mb-10 prose prose-invert prose-indigo" v-html="article?.summary"></div>
+        <div
+          class="mb-10 prose prose-invert prose-indigo article-content"
+          v-if="article?.summary"
+          v-html="renderedContent"
+        ></div>
         <div class="flex justify-between text-sm italic font-thin text-gray-100">
           <span>
             Source :
@@ -44,4 +59,18 @@ onMounted(() => {
   </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+.article-content :deep(p) {
+  margin-bottom: 1rem;
+}
+.article-content :deep(h1),
+.article-content :deep(h2),
+.article-content :deep(h3) {
+  font-weight: 600;
+  margin: 1.5rem 0 0.5rem;
+}
+.article-content :deep(a) {
+  color: #4db8ff;
+  text-decoration: underline;
+}
+</style>

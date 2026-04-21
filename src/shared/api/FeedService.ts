@@ -3,7 +3,6 @@ import type { Register } from '@/core/database/DbType.ts'
 
 const axios = api
 const FeedService = {
-
   async subscribe(username: string, url: string): Promise<Register> {
     const data = { url: url }
     return axios({ method: 'POST', url: `feeds/${username}`, data })
@@ -18,4 +17,4 @@ const FeedService = {
   },
 }
 
-export default FeedService;
+export default FeedService

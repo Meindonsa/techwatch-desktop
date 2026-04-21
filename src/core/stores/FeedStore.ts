@@ -31,21 +31,20 @@ export const useFeedStore = defineStore('sources', () => {
     }
   }
 
-  const subscribe = (payload:any) =>{
-    return FeedService.subscribe(userStore.getMe()?.username, payload);
+  const subscribe = (payload: any) => {
+    return FeedService.subscribe(userStore.getMe()?.username, payload)
   }
 
   const reloadSource = (withArticles: boolean = false, feedId: number) => {
     FeedService.retrieveFeeds(userStore.getMe()?.username).then(async (feeds: any) => {
-      const numbers: number = await FeedDao.bulkAddIfNotExists(feeds.data);
-      if(numbers>0) getFeeds();
-      if(withArticles && feedId> 0)
-        articleStore.loadFeedArticles(feedId)
+      const numbers: number = await FeedDao.bulkAddIfNotExists(feeds.data)
+      if (numbers > 0) getFeeds()
+      if (withArticles && feedId > 0) articleStore.loadFeedArticles(feedId)
     })
   }
 
-  const getFeeds = () =>{
-    FeedDao.getAll().then((res)=>{
+  const getFeeds = () => {
+    FeedDao.getAll().then((res) => {
       sources.value = res
     })
   }
@@ -67,7 +66,7 @@ export const useFeedStore = defineStore('sources', () => {
     error.value = null
 
     try {
-      await FeedService.unsubscribe(userStore.getMe()?.username, id);
+      await FeedService.unsubscribe(userStore.getMe()?.username, id)
       await FeedDao.remove(id)
       sources.value = sources.value.filter((s: Feed) => s.id !== id)
       await fetchSources()

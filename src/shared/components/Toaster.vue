@@ -67,7 +67,7 @@ const toastClassMap: Record<TToastStatus, string> = {
 
   background-color: var(--color);
 
-  padding: .8rem 2.2rem;
+  padding: 0.8rem 2.2rem;
   color: #fff;
   &.success {
     --color: green;

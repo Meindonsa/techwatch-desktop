@@ -3,7 +3,6 @@ import type { AxiosResponse } from 'axios'
 
 const axios = api
 export const ArticleService = {
-
   retrieveArticles(username: string): Promise<AxiosResponse> {
     return axios({ method: 'GET', url: `articles/${username}/articles` })
   },

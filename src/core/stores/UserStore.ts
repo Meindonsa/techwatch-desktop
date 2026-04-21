@@ -5,7 +5,7 @@ import UserService from '@/shared/api/UserService.ts'
 import StorageService from '@/shared/service/StoageService.ts'
 
 export const useUserStore = defineStore('user', () => {
-  const user = ref<User| null>(null)
+  const user = ref<User | null>(null)
   const WATCHER = 'WHATCHER'
 
   const register = (data: Register) => {
@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   const logout = () => {
-    user.value = null;
+    user.value = null
     StorageService.remove(WATCHER)
   }
 

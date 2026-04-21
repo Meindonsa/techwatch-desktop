@@ -30,9 +30,9 @@ const register = () => {
   userStore
     .register(data)
     .then(() => {
-        success.value = true
-      setTimeout(()=>{
-      router.push('/')
+      success.value = true
+      setTimeout(() => {
+        router.push('/')
       }, 1500)
     })
     .finally(() => (loading.value = false))

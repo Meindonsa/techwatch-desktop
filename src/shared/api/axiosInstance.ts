@@ -14,9 +14,8 @@ api.interceptors.request.use(
     config.headers.setContentType('application/json')
     config.headers['X-App-Token'] = `cs ${API_SECRET_TOKEN}`
 
-    const userToken = StorageService.getItem("WHATCHER")?.token;
-    if (userToken)
-      config.headers['Authorization'] = `Bearer ${userToken}`
+    const userToken = StorageService.getItem('WHATCHER')?.token
+    if (userToken) config.headers['Authorization'] = `Bearer ${userToken}`
 
     return config
   },

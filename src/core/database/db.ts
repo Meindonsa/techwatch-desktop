@@ -46,8 +46,7 @@ class FeedReaderDatabase extends Dexie {
 
     this.version(1).stores({
       feeds: 'id, name, original_url, &feed_url, type, created_at',
-      articles:
-        'id, title,  &link, pub_date, summary, author, image, feed_id, fetched_at',
+      articles: 'id, title,  &link, pub_date, summary, author, image, feed_id, fetched_at',
       settings: 'key',
     })
   }
