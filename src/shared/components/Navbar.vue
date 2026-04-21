@@ -7,10 +7,13 @@ import Dropdown from '@/shared/components/Dropdown.vue'
 import { useUserStore } from '@/core/stores/UserStore.ts'
 import { useRouter } from 'vue-router'
 import { useScrappingStore } from '@/core/stores/ScrappingStore.ts'
+import { isConnected } from '@/shared/service/Utils.ts'
+import useToasterStore from '@/core/stores/UseToasterStore.ts'
 
 const userStore = useUserStore()
 const filters = ref(SourceFilters)
 const useFilter = useFilterStore()
+const toasterStore = useToasterStore()
 const scrappingStore = useScrappingStore()
 
 const menu = ProfileMenu
@@ -37,6 +40,10 @@ const onProfileClick = (action: string) => {
 }
 
 const reloadArticle = () => {
+  if (!isConnected()) {
+    toasterStore.error({text:"Vous n'êtes pas connecté à internet"});
+    return;
+  }
   scrappingStore.reload()
 }
 </script>
