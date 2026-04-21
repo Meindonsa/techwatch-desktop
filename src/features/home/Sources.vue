@@ -4,6 +4,7 @@ import SourceForm from '@/features/home/SourceForm.vue'
 import { useFeedStore } from '@/core/stores/FeedStore.ts'
 import useToasterStore from '@/core/stores/UseToasterStore.ts'
 import { useArticleStore } from '@/core/stores/ArticleStore.ts'
+import { isConnected } from '@/shared/service/Utils.ts'
 
 const loading = ref(false)
 const errorMessage = ref<null | string>(null)
@@ -15,6 +16,12 @@ const articleStore = useArticleStore()
 const sources = computed(() => feedStore.sources)
 
 const hideForm = () => {
+  if (!showSource.value) {
+    if (!isConnected()) {
+      toasterStore.error({ text: "Vous n'êtes pas connecté à internet" })
+      return
+    }
+  }
   showSource.value = !showSource.value
 }
 
@@ -33,6 +40,10 @@ const onSubmit = (event: any) => {
 }
 
 const onDelete = (event: any) => {
+  if (!isConnected()) {
+    toasterStore.error({ text: "Vous n'êtes pas connecté à internet" })
+    return
+  }
   loading.value = true
   feedStore
     .removeSource(event.id)

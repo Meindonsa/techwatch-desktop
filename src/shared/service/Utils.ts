@@ -24,3 +24,7 @@ function includesProtocol(value: string) {
 export function isNull(value: string) {
   return value == null || value.trim().length == 0
 }
+
+export function isConnected(): boolean {
+  return navigator.onLine;
+}
