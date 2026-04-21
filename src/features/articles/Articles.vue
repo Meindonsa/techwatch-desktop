@@ -20,14 +20,20 @@ const articles = computed(() => articleStore.articles)
 
 const retrieveArticles = async (page = 1) => {
   loading.value = true
-  try {
-    const index = page - 1
-    await articleStore.retrieveArticles(index, sizeOfElement.value)
-  } catch (e) {
-    console.error('Erreur lors de la récupération :', e)
-  } finally {
-    loading.value = false
-  }
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
+  setTimeout(async () => {
+    try {
+      const index = page - 1
+      await articleStore.retrieveArticles(index, sizeOfElement.value)
+    } catch (e) {
+      console.error('Erreur lors de la récupération :', e)
+    } finally {
+      loading.value = false
+    }
+  }, 1000)
 }
 
 const onChangeElementPerPage = async (event: any) => {

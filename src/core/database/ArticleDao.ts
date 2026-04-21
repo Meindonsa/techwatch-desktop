@@ -1,9 +1,10 @@
 import type { GetArticlesOptions } from '@/core/database/DbType.ts'
 import { type Article, db } from '@/core/database/db.ts'
+import { FeedDao } from '@/core/database/FeedDao.ts'
 
 export const ArticleDao = {
   async getAll({ sourceId, limit, offset }: GetArticlesOptions = {}): Promise<{
-    articles: Article[]
+    articles: Article[]| any[]
     total: number
   }> {
     let query = sourceId
@@ -16,7 +17,14 @@ export const ArticleDao = {
     if (limit) query = query.limit(limit) // limit ensuite
 
     const articles = await query.toArray()
-    return { articles, total }
+
+    const articlesWithFeed = await Promise.all(
+      articles.map(async (article) => {
+        const feed = await db.feeds.get(article.feed_id)
+        return { ...article, feed }
+      }),
+    )
+    return { articles: articlesWithFeed, total }
   },
 
   getByUrl(url: string): Promise<Article | undefined> {
@@ -51,5 +59,12 @@ export const ArticleDao = {
 
   countBySource(sourceId: number): Promise<number> {
     return db.articles.where('source_id').equals(sourceId).count()
+  },
+
+  async find(id: number) {
+    const article: any = await db.articles.where('id').equals(id).first()
+    if (article == undefined) return null
+    article.feed = await FeedDao.getById(article?.feed_id)
+    return article;
   },
 }

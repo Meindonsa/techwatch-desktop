@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, readonly, type Ref, ref } from 'vue'
-import type { CreateSourcePayload } from '@/core/stores/FeedStore.ts'
 import { ArticleDao } from '@/core/database/ArticleDao.ts'
-import type { Article } from '@/core/database/db.ts'
 import { ArticleService } from '@/shared/api/ArticleService.ts'
 import { useUserStore } from '@/core/stores/UserStore.ts'
 
@@ -49,6 +47,15 @@ export const useArticleStore = defineStore('article', () => {
     })
   }
 
+  const findArticle = async (id: number) => {
+    try {
+      return await ArticleDao.find(id)
+    }catch (e){
+      error.value = (e as Error).message
+      return null
+    }
+  }
+
   const loadFeedArticles = (feedId: number) => {
     ArticleService.retrieveFeedArticles(userStore.getMe()?.username, feedId).then(async (response) => {
       try {
@@ -67,6 +74,7 @@ export const useArticleStore = defineStore('article', () => {
     articles: readonly(articles),
     loading: readonly(loading),
 
+    findArticle,
     loadArticles,
     loadFeedArticles,
     retrieveArticles,
