@@ -3,6 +3,7 @@ import { datePipe } from '@/shared/service/DateFormatter.ts'
 
 defineProps(['article'])
 const { formatDate } = datePipe()
+
 </script>
 
 <template>
@@ -14,15 +15,30 @@ const { formatDate } = datePipe()
       <h5 class="mb-2 text-md font-bold text-indigo-500">
         {{ article.title }}
       </h5>
-      <div class="text-gray-300">
-        {{ article.summary }}
-      </div>
+      <div class="text-gray-300 mb-2 summary">{{ article.summary }}</div>
       <div class="flex justify-between w-full text-sm text-gray-500">
-        <span>Depuis : {{ article.source_id }} {{ ' par: ' + (article.author || 'Inconnu') }}</span>
-        <span>{{ formatDate(article.fetchedDate, 'mediumDate') }}</span>
+        <span>Depuis : {{ article.feed_id }} {{ ' par: ' + (article.author || 'Inconnu') }}</span>
+        <span>{{ formatDate(article.fetched_at, 'mediumDate') }}</span>
       </div>
     </div>
   </RouterLink>
 </template>
 
-<style scoped></style>
+<style scoped>
+.summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Nombre de lignes visibles (change selon tes besoins) */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 726px) {
+  .summary {
+    -webkit-line-clamp: 2;
+  }
+}
+</style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useFilterStore } from '@/core/stores/filter.ts'
-import ArticleITem from '@/features/home/ArticleITem.vue'
+import ArticleITem from '@/shared/components/ArticleITem.vue'
 import Sources from '@/features/home/Sources.vue'
 import { computed, ref, watchEffect } from 'vue'
 import Button from '@/shared/components/Button.vue'

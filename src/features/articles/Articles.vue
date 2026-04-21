@@ -2,7 +2,7 @@
 import { useRoute, useRouter } from 'vue-router'
 import { computed, ref, watch } from 'vue'
 import { useFilterStore } from '@/core/stores/filter.ts'
-import ArticleITem from '@/features/home/ArticleITem.vue'
+import ArticleITem from '@/shared/components/ArticleITem.vue'
 import Paginator from '@/shared/components/Paginator.vue'
 import Skeleton from '@/shared/components/Skeleton.vue'
 import { useArticleStore } from '@/core/stores/ArticleStore.ts'
@@ -12,17 +12,16 @@ const router = useRouter()
 const currentPage = computed(() => Number(route.query.page) || 1)
 const articleStore = useArticleStore()
 
-const totalElement = computed(() => useArticleStore().total)
+const totalElement = computed(() => articleStore.total)
 const sizeOfElement = ref(5)
 const loading = ref(false)
 const useFilter = useFilterStore()
-const searchValue = computed(() => useFilter.searchValue)
-const articles = computed(() => useArticleStore().articles)
-const pagination = ref({ total: 0, page: 0, size: 5 })
+const articles = computed(() => articleStore.articles)
 
-const retrieveArticles = async (index = 0) => {
+const retrieveArticles = async (page = 1) => {
   loading.value = true
   try {
+    const index = page - 1
     await articleStore.retrieveArticles(index, sizeOfElement.value)
   } catch (e) {
     console.error('Erreur lors de la récupération :', e)
@@ -33,22 +32,17 @@ const retrieveArticles = async (index = 0) => {
 
 const onChangeElementPerPage = async (event: any) => {
   sizeOfElement.value = event.target.value
-  await retrieveArticles()
+  router.push({ path: '/articles', query: { page: 1 } })
 }
 
 const handlePageChange = (newPage: number) => {
-  goToPage(newPage + 1)
-}
-
-const goToPage = (page: number) => {
-  router.push({ path: '/articles', query: { page } })
+  router.push({ path: '/articles', query: { page: newPage } })
 }
 
 watch(
   currentPage,
   (newPage) => {
-    console.log('Chargement page', newPage)
-    retrieveArticles(newPage - 1)
+    retrieveArticles(newPage)
   },
   { immediate: true },
 )
@@ -80,13 +74,10 @@ watch(
         <Paginator
           :total-items="totalElement"
           :items-per-page="sizeOfElement"
-          :current-page="pagination.page"
+          :current-page="currentPage"
           @change-page="handlePageChange"
         />
-        <div class="text-center py-5"></div>
       </div>
     </div>
   </main>
 </template>
-
-<style scoped></style>

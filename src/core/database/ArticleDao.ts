@@ -9,10 +9,11 @@ export const ArticleDao = {
     let query = sourceId
       ? db.articles.where('feed_id').equals(sourceId).reverse()
       : db.articles.orderBy('fetched_at').reverse()
+
     const total = await query.count()
 
-    if (limit) query = query.limit(limit)
-    if (offset) query = query.offset(offset)
+    if (offset) query = query.offset(offset) // offset d'abord
+    if (limit) query = query.limit(limit) // limit ensuite
 
     const articles = await query.toArray()
     return { articles, total }
