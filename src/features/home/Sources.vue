@@ -7,8 +7,8 @@ import { useArticleStore } from '@/core/stores/ArticleStore.ts'
 import { isConnected } from '@/shared/service/Utils.ts'
 
 const loading = ref(false)
-const errorMessage = ref<null | string>(null)
 const showSource = ref(false)
+const errorMessage = ref<null | string>(null)
 const feedStore = useFeedStore()
 const toasterStore = useToasterStore()
 const articleStore = useArticleStore()
