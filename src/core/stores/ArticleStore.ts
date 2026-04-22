@@ -27,9 +27,9 @@ export const useArticleStore = defineStore('article', () => {
     return articles.value.find((item: any): boolean => item.fid == selectedArticleId.value)
   })
 
-  async function retrieveArticles(index: number = 0, size: number = 5) {
+  async function retrieveArticles(index: number = 0,feed_id:number|undefined = undefined, size: number = 5) {
     const offset = index * size
-    const response = await ArticleDao.getAll({ offset, limit: size })
+    const response = await ArticleDao.getAll({ sourceId:feed_id, offset:offset, limit: size })
     articles.value = response.articles
     total.value = response.total
   }

@@ -1,24 +1,27 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useFilterStore } from '@/core/stores/filter.ts'
 import ArticleITem from '@/shared/components/ArticleITem.vue'
 import Paginator from '@/shared/components/Paginator.vue'
 import Skeleton from '@/shared/components/Skeleton.vue'
 import { useArticleStore } from '@/core/stores/ArticleStore.ts'
+import { useFeedStore } from '@/core/stores/FeedStore.ts'
 
 const route = useRoute()
 const router = useRouter()
-const currentPage = computed(() => Number(route.query.page) || 1)
+const feedStore = useFeedStore()
 const articleStore = useArticleStore()
 
+const feeds = computed(() => feedStore.sources)
+const currentPage = computed(() => Number(route.query.page) || 1)
 const totalElement = computed(() => articleStore.total)
-const sizeOfElement = ref(5)
+const selectedFeed = computed(() => Number(route.query.feed) || 0)
 const loading = ref(false)
 const useFilter = useFilterStore()
 const articles = computed(() => articleStore.articles)
 
-const retrieveArticles = async (page = 1) => {
+const retrieveArticles = async (page = 1, feed: any = undefined) => {
   loading.value = true
   window.scrollTo({
     top: 0,
@@ -27,7 +30,7 @@ const retrieveArticles = async (page = 1) => {
   setTimeout(async () => {
     try {
       const index = page - 1
-      await articleStore.retrieveArticles(index, sizeOfElement.value)
+      await articleStore.retrieveArticles(index, feed)
     } catch (e) {
       console.error('Erreur lors de la récupération :', e)
     } finally {
@@ -36,22 +39,30 @@ const retrieveArticles = async (page = 1) => {
   }, 1000)
 }
 
-const onChangeElementPerPage = async (event: any) => {
-  sizeOfElement.value = event.target.value
-  router.push({ path: '/articles', query: { page: 1 } })
+const onChangeFeed = (event: any) => {
+  const source = event.target.value
+  let query: any = { page: 1 }
+  if (source > 0) query = { ...query, feed: source }
+  router.push({ path: '/articles', query: query })
 }
 
 const handlePageChange = (newPage: number) => {
-  router.push({ path: '/articles', query: { page: newPage } })
+  let query: any = { page: newPage }
+  if (selectedFeed.value) query = { ...query, feed: selectedFeed.value }
+  router.push({ path: '/articles', query: query })
 }
 
 watch(
-  currentPage,
-  (newPage) => {
-    retrieveArticles(newPage)
+  [currentPage, selectedFeed],
+  ([newPage], [newFeed]) => {
+    retrieveArticles(newPage, newFeed)
   },
   { immediate: true },
 )
+
+onMounted(() => {
+  feedStore.fetchSources()
+})
 </script>
 
 <template>
@@ -60,14 +71,14 @@ watch(
       <h1 class="text-2xl font-bold text-white mb-10">Tous les articles</h1>
       <div>
         <select
-          :value="sizeOfElement"
-          @change="onChangeElementPerPage($event)"
+          :value="selectedFeed"
+          @change="onChangeFeed($event)"
           class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-gray-50 text-gray-500 text-sm rounded-base shadow-xs placeholder:text-body"
         >
-          <option value="5">5 par page</option>
-          <option value="10">10 par page</option>
-          <option value="15">15 par page</option>
-          <option value="20">20 par page</option>
+          <option :value="0" :selected="selectedFeed == 0">Sélectionnez la source</option>
+          <option v-for="feed of feeds" :value="feed.id" :selected="selectedFeed == feed.id">
+            {{ feed.name }}
+          </option>
         </select>
       </div>
     </div>
@@ -78,8 +89,8 @@ watch(
           <ArticleITem v-for="article in articles" :key="article?.id" :article="article" />
         </TransitionGroup>
         <Paginator
+          :items-per-page="5"
           :total-items="totalElement"
-          :items-per-page="sizeOfElement"
           :current-page="currentPage"
           @change-page="handlePageChange"
         />
